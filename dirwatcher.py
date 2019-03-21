@@ -7,15 +7,26 @@ __author__ = 'jayaimzzz'
 import argparse
 import os
 import time
+import signal
+
+run_flag = True 
+
+def handle_signal(signum, stack):
+    print "inside handle_signal"
+    run_flag = False
+    # raise SystemExit("exiting")
+
+signal.signal(signal.SIGINT, handle_signal)
+
 
 def main(args):
     ext = 'txt' if args.ext == None else args.ext
     int1 = 2 if args.int == None else args.int
     dir1, magic_text = args.dir, args.text
-    print dir1, magic_text, ext, int1
     dict1 = {}
-    
-    while True:
+
+    while run_flag:
+        print run_flag
         try:
             files = os.listdir(dir1)
         except:
@@ -31,8 +42,16 @@ def main(args):
                             dict1[file] = i
                             if magic_text in line:
                                 print '"{}" found in "{}" at line {}'.format(magic_text,file,i + 1)
-
+            removed_files = []
+            for key in dict1:
+                if key not in files:
+                    print '{} file was deleted'.format(key)
+                    removed_files.append(key)
+            if removed_files:
+                for file in removed_files:
+                    dict1.pop(file)
         time.sleep(int1)
+    print "stop now"
 
 
                 
