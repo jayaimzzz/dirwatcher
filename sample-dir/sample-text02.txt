@@ -1,4 +1,0 @@
-magic
-no
-readme
-hello
